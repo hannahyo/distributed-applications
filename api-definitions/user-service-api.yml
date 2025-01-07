@@ -1,0 +1,66 @@
+openapi: 3.0.3
+info:
+  title: Patient Service v1
+  description: |-
+    API for Patient Service
+  termsOfService: http://swagger.io/terms/
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+paths:
+  /api/v1/user:
+    post:
+      tags:
+        - User
+      description: Create a new user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiUser'
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+components:
+  schemas:
+    ApiUsers:
+      type: array
+      items:
+        $ref: '#/components/schemas/ApiUser'
+    ApiUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        firstName:
+          type: string
+          example: 'Hannah'
+        lastName:
+          type: string
+          example: 'Young'
+        email:
+          type: string
+          format: email
+          example: 'hannah.young@gmail.com'
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'Functional code specifying the error'
+          example: '2300'
+        message:
+          type: string
+          description: 'Brief explanation about the error, for more information consult the Doctor Service team'
