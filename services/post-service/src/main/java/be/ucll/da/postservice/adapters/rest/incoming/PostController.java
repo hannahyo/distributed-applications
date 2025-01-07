@@ -24,6 +24,12 @@ public class PostController implements PostApiDelegate {
         return ResponseEntity.ok().build();
     }
 
+    @Override
+    public ResponseEntity<Void> deletePost(Long id) {
+        postService.deletePost(id);
+        return ResponseEntity.ok().build();
+    }
+
     private ApiPost toDto(Post post) {
         return new ApiPost()
                 .id(post.getId())

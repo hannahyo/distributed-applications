@@ -23,4 +23,11 @@ public class PostService {
 
         postRepository.save(post);
     }
+
+    public void deletePost(Long id) {
+        if (!postRepository.existsById(id)) {
+            throw new IllegalArgumentException("Post with id " + id + " does not exist");
+        }
+        postRepository.deleteById(id);
+    }
 }
