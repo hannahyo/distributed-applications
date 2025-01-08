@@ -1,10 +1,10 @@
 package be.ucll.da.userservice.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -20,6 +20,9 @@ public class User {
 
     @Email
     private String email;
+
+    @ElementCollection
+    private List<Long> friends = new ArrayList<>();
 
     protected User() {}
 
@@ -43,5 +46,13 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public List<Long> getFriends() {
+        return friends;
+    }
+
+    public void addFriend(Long friendId) {
+        friends.add(friendId);
     }
 }

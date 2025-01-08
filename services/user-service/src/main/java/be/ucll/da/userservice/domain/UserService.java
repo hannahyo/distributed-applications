@@ -4,6 +4,8 @@ import be.ucll.da.userservice.api.model.ApiUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserService {
 
@@ -22,5 +24,20 @@ public class UserService {
         );
 
         userRepository.save(user);
+    }
+
+    public void addFriend(Long userId, Long friendId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        User friend = userRepository.findById(friendId).orElseThrow();
+
+        user.addFriend(friendId);
+        friend.addFriend(userId);
+
+        userRepository.save(user);
+        userRepository.save(friend);
+    }
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
     }
 }
