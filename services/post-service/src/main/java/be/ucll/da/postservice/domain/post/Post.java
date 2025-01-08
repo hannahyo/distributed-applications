@@ -12,6 +12,8 @@ public class Post {
     @GeneratedValue
     private Integer id;
 
+    private Boolean isValidUser;
+
     private String content;
 
     @ElementCollection
@@ -57,8 +59,18 @@ public class Post {
         return hasValidTaggedUsers;
     }
 
-    public void validatingTaggedUsers() {
+    public void validatingUser() {
+        this.status = PostStatus.VALIDATING_USER;
+    }
+
+    public void userValid() {
         this.status = PostStatus.VALIDATING_TAGGED_USERS;
+        this.isValidUser = true;
+    }
+
+    public void userInvalid() {
+        this.status = PostStatus.NO_USER;
+        this.isValidUser = false;
     }
 
     public void taggedUsersValid() {

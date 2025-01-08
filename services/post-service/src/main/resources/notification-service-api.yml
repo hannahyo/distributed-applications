@@ -14,9 +14,7 @@ components:
     SendEmailCommand:
       type: object
       properties:
-        recipients:
-          type: array
-          items:
-            type: string
+        recipient:
+          type: string
         message:
           type: string

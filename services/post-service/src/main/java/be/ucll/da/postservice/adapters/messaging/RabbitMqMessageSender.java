@@ -2,6 +2,7 @@ package be.ucll.da.postservice.adapters.messaging;
 
 import be.ucll.da.postservice.client.notification.model.SendEmailCommand;
 import be.ucll.da.postservice.client.user.model.ValidateTaggedUsersCommand;
+import be.ucll.da.postservice.client.user.model.ValidateUserCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -22,16 +23,23 @@ public class RabbitMqMessageSender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void validateTaggedUsersCommand(Integer postId, List<Integer> taggedUsers) {
+    public void sendValidateUserCommand(Integer postId, Integer userId) {
+        var command = new ValidateUserCommand();
+        command.userId(userId);
+        command.postId(postId);
+        sendToQueue("q.user-service.validate-user", command);
+    }
+
+    public void sendValidateTaggedUsersCommand(Integer postId, List<Integer> taggedUsers) {
         var command = new ValidateTaggedUsersCommand();
         command.taggedUsers(taggedUsers);
         command.postId(postId);
-        sendToQueue("q.post-service.validate-tagged-users", command);
+        sendToQueue("q.user-service.validate-tagged-users", command);
     }
 
-    public void sendEmail(List<String> recipients, String message) {
+    public void sendEmail(String recipient, String message) {
         var command = new SendEmailCommand();
-        command.recipients(recipients);
+        command.recipient(recipient);
         command.message(message);
         sendToQueue("q.notification-service.send-email", command);
     }
