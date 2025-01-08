@@ -82,6 +82,11 @@ components:
                 type: integer
                 format: int64
                 example: 10
+    UserTaggedEvent:
+      type: object
+      properties:
+        post:
+            $ref: '#/components/schemas/ApiPost'
     ApiError:
       type: object
       properties:

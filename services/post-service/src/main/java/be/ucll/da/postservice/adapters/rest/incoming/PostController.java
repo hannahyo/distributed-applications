@@ -2,8 +2,8 @@ package be.ucll.da.postservice.adapters.rest.incoming;
 
 import be.ucll.da.postservice.api.PostApiDelegate;
 import be.ucll.da.postservice.api.model.ApiPost;
-import be.ucll.da.postservice.domain.Post;
-import be.ucll.da.postservice.domain.PostService;
+import be.ucll.da.postservice.domain.post.Post;
+import be.ucll.da.postservice.domain.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

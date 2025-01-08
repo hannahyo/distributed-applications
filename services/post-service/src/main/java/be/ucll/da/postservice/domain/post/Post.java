@@ -1,4 +1,4 @@
-package be.ucll.da.postservice.domain;
+package be.ucll.da.postservice.domain.post;
 
 import jakarta.persistence.*;
 
