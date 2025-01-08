@@ -9,10 +9,10 @@
         <module name="post-service" />
         <module name="user-service" />
         <module name="notification-service" />
+        <module name="feed-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="feed-service" target="23" />
       <module name="post-service (1) (be.ucll.da)" target="17" />
     </bytecodeTargetLevel>
   </component>

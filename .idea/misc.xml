@@ -13,7 +13,6 @@
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$PROJECT_DIR$/services/feed-service/pom.xml" />
         <option value="$PROJECT_DIR$/services/post-service1/pom.xml" />
       </set>
     </option>
