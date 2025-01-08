@@ -22,8 +22,8 @@ public class PostService {
     }
 
     public void createPost(ApiPost data) {
-        List<Long> taggedUsers = data.getTaggedUsers();
-        for (Long taggedUser : taggedUsers) {
+        List<Integer> taggedUsers = data.getTaggedUsers();
+        for (Integer taggedUser : taggedUsers) {
             Optional<User> user = userRepository.findById(taggedUser);
             if (user.isEmpty()) {
                 throw new PostException("User with id " + taggedUser + " does not exist");
@@ -39,7 +39,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public void deletePost(Long id) {
+    public void deletePost(Integer id) {
         if (!postRepository.existsById(id)) {
             throw new IllegalArgumentException("Post with id " + id + " does not exist");
         }

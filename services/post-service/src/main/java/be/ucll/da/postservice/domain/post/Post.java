@@ -10,25 +10,30 @@ public class Post {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
 
     private String content;
 
     @ElementCollection
-    private List<Long> taggedUsers;
+    private List<Integer> taggedUsers;
 
-    private Long createdBy;
+    private Integer createdBy;
+
+    @Enumerated(EnumType.STRING)
+    private PostStatus status;
+
+    private Boolean hasValidTaggedUsers;
 
     protected Post() {
     }
 
-    public Post(String content, List<Long> taggedUsers, Long createdBy) {
+    public Post(String content, List<Integer> taggedUsers, Integer createdBy) {
         this.content = content;
         this.taggedUsers = taggedUsers;
         this.createdBy = createdBy;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -36,11 +41,33 @@ public class Post {
         return content;
     }
 
-    public List<Long> getTaggedUsers() {
+    public List<Integer> getTaggedUsers() {
         return taggedUsers;
     }
 
-    public Long getCreatedBy() {
+    public Integer getCreatedBy() {
         return createdBy;
+    }
+
+    public PostStatus getStatus() {
+        return status;
+    }
+
+    public Boolean hasValidTaggedUsers() {
+        return hasValidTaggedUsers;
+    }
+
+    public void validatingTaggedUsers() {
+        this.status = PostStatus.VALIDATING_TAGGED_USERS;
+    }
+
+    public void taggedUsersValid() {
+        this.status = PostStatus.POST_CREATED;
+        this.hasValidTaggedUsers = true;
+    }
+
+    public void taggedUsersInvalid() {
+        this.status = PostStatus.TAGGED_USERS_INVALID;
+        this.hasValidTaggedUsers = false;
     }
 }

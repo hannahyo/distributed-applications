@@ -26,7 +26,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void addFriend(Long userId, Long friendId) {
+    public void addFriend(Integer userId, Integer friendId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException("User not found"));
         User friend = userRepository.findById(friendId).orElseThrow(() -> new ServiceException("User not found"));
 

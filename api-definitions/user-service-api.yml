@@ -84,6 +84,30 @@ paths:
 
 components:
   schemas:
+    ValidateTaggedUsersCommand:
+      type: object
+      properties:
+        postId:
+            type: integer
+        taggedUsers:
+            type: array
+            items:
+                type: integer
+    TaggedUsersValidatedEvent:
+      type: object
+      properties:
+        postId:
+            type: integer
+        taggedUsers:
+            type: array
+            items:
+                type: integer
+        emails:
+          type: array
+          items:
+            type: string
+        isValid:
+            type: boolean
     ApiUsers:
       type: array
       items:

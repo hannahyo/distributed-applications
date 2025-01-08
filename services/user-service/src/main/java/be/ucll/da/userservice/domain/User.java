@@ -12,7 +12,7 @@ public class User {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
 
     private String firstName;
 
@@ -22,7 +22,7 @@ public class User {
     private String email;
 
     @ElementCollection
-    private List<Long> friends = new ArrayList<>();
+    private List<Integer> friends = new ArrayList<>();
 
     protected User() {}
 
@@ -32,7 +32,7 @@ public class User {
         this.email = email;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -48,11 +48,11 @@ public class User {
         return email;
     }
 
-    public List<Long> getFriends() {
+    public List<Integer> getFriends() {
         return friends;
     }
 
-    public void addFriend(Long friendId) {
+    public void addFriend(Integer friendId) {
         friends.add(friendId);
     }
 }
