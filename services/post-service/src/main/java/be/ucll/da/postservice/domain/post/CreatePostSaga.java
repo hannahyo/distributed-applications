@@ -40,13 +40,11 @@ public class CreatePostSaga {
         if (event.getIsValid()) {
             post.taggedUsersValid();
             event.getEmails().forEach(email ->
-                    eventSender.sendEmail(email, generateMessage(post.getId(), "Your post was created successfully."))
+                    eventSender.sendEmail(email, generateMessage(post.getId(), "You have been tagged in a post."))
             );
         } else {
             post.taggedUsersInvalid();
-            event.getEmails().forEach(email ->
-                    eventSender.sendEmail(email, generateMessage(post.getId(), "Your post creation failed because some tagged users do not exist."))
-            );
+            postRepository.delete(post);
         }
     }
 

@@ -1,6 +1,7 @@
 package be.ucll.da.userservice.domain;
 
 import be.ucll.da.userservice.api.model.ApiUser;
+import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +19,27 @@ public class UserService {
         this.eventSender = eventSender;
     }
 
+    public User validateUser(Integer id) {
+        return userRepository.findUserById(id);
+    }
+
+    public List<User> getUsersById(List<Integer> ids) {
+        List<User> users = userRepository.findAllById(ids);
+
+        List<Integer> foundIds = users.stream()
+                .map(User::getId)
+                .toList();
+
+        if (!foundIds.containsAll(ids)) {
+            return null;
+        }
+
+        return users;
+    }
+
     public void createUser(ApiUser data) {
         User user = new User(
+                data.getId(),
                 data.getFirstName(),
                 data.getLastName(),
                 data.getEmail()

@@ -50,8 +50,20 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    public Declarables createValidateTaggedUsers(){
+        return new Declarables(new Queue("q.user-service.validate-tagged-users"));
+    }
+
+    @Bean
+    public Declarables createTaggedUsersValidatedExchange(){
+        return new Declarables(
+                new FanoutExchange("x.tagged-users-validated"),
+                new Queue("q.tagged-users-validated.post-service"),
+                new Binding("q.tagged-users-validated.post-service", Binding.DestinationType.QUEUE, "x.tagged-users-validated", "tagged-users-validated.post-service", null));
+    }
+
+    @Bean
     public Declarables createSendEmailQueue(){
         return new Declarables(new Queue("q.notification-service.send-email"));
     }
-
 }
