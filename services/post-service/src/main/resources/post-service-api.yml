@@ -44,11 +44,29 @@ paths:
           required: true
           schema:
             type: integer
-            format: int64
-            example: 10
       responses:
         '200':
           description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/post/all:
+    get:
+      tags:
+        - Post
+      description: Get all posts
+      operationId: getPosts
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiPosts'
         '500':
           description: Internal Error
           content:

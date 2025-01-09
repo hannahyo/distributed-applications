@@ -10,10 +10,12 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EventSender eventSender;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EventSender eventSender) {
         this.userRepository = userRepository;
+        this.eventSender = eventSender;
     }
 
     public void createUser(ApiUser data) {
@@ -24,6 +26,7 @@ public class UserService {
         );
 
         userRepository.save(user);
+        eventSender.sendUserCreatedEvent(user);
     }
 
     public void addFriend(Integer userId, Integer friendId) {

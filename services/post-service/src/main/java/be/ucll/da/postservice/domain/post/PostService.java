@@ -1,42 +1,28 @@
 package be.ucll.da.postservice.domain.post;
 
 import be.ucll.da.postservice.api.model.ApiPost;
-import be.ucll.da.postservice.domain.user.User;
-import be.ucll.da.postservice.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private final CreatePostSaga createPostSaga;
 
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, CreatePostSaga createPostSaga) {
         this.postRepository = postRepository;
-        this.userRepository = userRepository;
+        this.createPostSaga = createPostSaga;
     }
 
     public void createPost(ApiPost data) {
-        List<Integer> taggedUsers = data.getTaggedUsers();
-        for (Integer taggedUser : taggedUsers) {
-            Optional<User> user = userRepository.findById(taggedUser);
-            if (user.isEmpty()) {
-                throw new PostException("User with id " + taggedUser + " does not exist");
-            }
-        }
-
-        Post post = new Post(
-                data.getContent(),
-                data.getTaggedUsers(),
-                data.getCreatedBy()
-        );
+        var post = new Post(data.getContent(), data.getTaggedUsers(), data.getCreatedBy());
 
         postRepository.save(post);
+        createPostSaga.executeSaga(post);
     }
 
     public void deletePost(Integer id) {
@@ -44,5 +30,9 @@ public class PostService {
             throw new IllegalArgumentException("Post with id " + id + " does not exist");
         }
         postRepository.deleteById(id);
+    }
+
+    public List<Post> getPosts() {
+        return postRepository.findAll();
     }
 }
