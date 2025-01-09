@@ -2,6 +2,7 @@ package be.ucll.da.postservice.domain.post;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,6 +28,9 @@ public class Post {
     private Boolean hasValidTaggedUsers;
 
     private int likes = 0;
+
+    @ElementCollection
+    private List<Integer> likedBy = new ArrayList<>();
 
     @ElementCollection
     private List<String> comments;
@@ -72,9 +76,19 @@ public class Post {
         return comments;
     }
 
+    public List<Integer> getLikedBy() {
+        return likedBy;
+    }
 
-    public void like() {
+
+    public void like(Integer userId) {
         likes++;
+        likedBy.add(userId);
+    }
+
+    public void unlike(Integer userId) {
+        likes--;
+        likedBy.remove(userId);
     }
 
     public void comment(String comment) {
@@ -87,6 +101,11 @@ public class Post {
 
     public void userValid() {
         this.status = PostStatus.VALIDATING_TAGGED_USERS;
+        this.isValidUser = true;
+    }
+
+    public void userLikedValid() {
+        this.status = PostStatus.VALIDATING_FEED;
         this.isValidUser = true;
     }
 
@@ -103,5 +122,13 @@ public class Post {
     public void taggedUsersInvalid() {
         this.status = PostStatus.TAGGED_USERS_INVALID;
         this.hasValidTaggedUsers = false;
+    }
+
+    public void postInFeedValid() {
+        this.status = PostStatus.FEED_VALIDATED;
+    }
+
+    public void postInFeedInvalid() {
+        this.status = PostStatus.FEED_INVALID;
     }
 }

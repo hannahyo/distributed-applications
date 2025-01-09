@@ -1,8 +1,11 @@
 package be.ucll.da.postservice.adapters.messaging;
 
+import be.ucll.da.postservice.client.feed.model.PostInFeedValidatedEvent;
 import be.ucll.da.postservice.client.user.model.TaggedUsersValidatedEvent;
+import be.ucll.da.postservice.client.user.model.UserLikedValidatedEvent;
 import be.ucll.da.postservice.client.user.model.UserValidatedEvent;
 import be.ucll.da.postservice.domain.post.CreatePostSaga;
+import be.ucll.da.postservice.domain.post.LikePostSaga;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +20,12 @@ public class MessageListener {
     private final static Logger LOGGER = LoggerFactory.getLogger(MessageListener.class);
 
     private final CreatePostSaga createPostSaga;
+    private final LikePostSaga likePostSaga;
 
     @Autowired
-    public MessageListener(CreatePostSaga createPostSaga) {
+    public MessageListener(CreatePostSaga createPostSaga, LikePostSaga likePostSaga) {
         this.createPostSaga = createPostSaga;
+        this.likePostSaga = likePostSaga;
     }
 
     @RabbitListener(queues = {"q.user-validated.post-service"})
@@ -33,5 +38,17 @@ public class MessageListener {
     public void onTaggedUserValidated(TaggedUsersValidatedEvent event) {
         LOGGER.info("Receiving event: " + event);
         this.createPostSaga.executeSaga(event.getPostId(), event);
+    }
+
+    @RabbitListener(queues = {"q.user-liked-validated.post-service"})
+    public void onUserLikedValidated(UserLikedValidatedEvent event) {
+        LOGGER.info("Receiving event: " + event);
+        this.likePostSaga.executeSaga(event.getPostId(), event);
+    }
+
+    @RabbitListener(queues = {"q.post-in-feed-validated.post-service"})
+    public void onPostInFeedValidated(PostInFeedValidatedEvent event) {
+        LOGGER.info("Receiving event: " + event);
+        this.likePostSaga.executeSaga(event.getPostId(), event);
     }
 }

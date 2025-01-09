@@ -74,8 +74,29 @@ public class MessageListener {
             event.isValid(false);
         }
 
+
         LOGGER.info("Sending event: " + event);
         this.rabbitTemplate.convertAndSend("x.tagged-users-validated", "", event);
+    }
+
+    @RabbitListener(queues = {"q.user-service.validate-user-liked"})
+    public void onValidateUserLiked(ValidateUserLikedCommand command) {
+        LOGGER.info("Received command: " + command);
+
+        UserLikedValidatedEvent event = new UserLikedValidatedEvent();
+        event.postId(command.getPostId());
+
+        User user = userService.validateUser(command.getLikedBy());
+        if (user != null) {
+            event.likedBy(user.getId());
+            event.isValid(true);
+            event.email(user.getEmail());
+        } else {
+            event.isValid(false);
+        }
+
+        LOGGER.info("Sending event: " + event);
+        this.rabbitTemplate.convertAndSend("x.user-liked-validated", "", event);
     }
 
 }

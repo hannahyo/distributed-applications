@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -54,6 +55,22 @@ public class FeedService {
                                 (taggedUserId == null || post.getTaggedUsers().contains(taggedUserId))
                 )
                 .collect(Collectors.toList());
+    }
+
+    public Post validateUserFeed(Integer postId, Integer userId) {
+        Optional<Post> postOptional = postRepository.findById(postId);
+
+        if (postOptional.isEmpty()) {
+            throw new IllegalArgumentException("Post not found with ID: " + postId);
+        }
+
+        Post post = postOptional.get();
+        List<Post> userFeed = getUserFeed(userId);
+
+        if (!userFeed.contains(post)) {
+            return null;
+        }
+        return post;
     }
 
 }

@@ -71,6 +71,32 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    public Declarables createValidateUserLikedQueue(){
+        return new Declarables(new Queue("q.user-service.validate-user-liked"));
+    }
+
+    @Bean
+    public Declarables createUserLikedValidatedExchange(){
+        return new Declarables(
+                new FanoutExchange("x.user-liked-validated"),
+                new Queue("q.user-liked-validated.post-service" ),
+                new Binding("q.user-liked-validated.post-service", Binding.DestinationType.QUEUE, "x.user-liked-validated", "user-liked-validated.post-service", null));
+    }
+
+    @Bean
+    public Declarables createValidatePostInFeedQueue(){
+        return new Declarables(new Queue("q.feed-service.validate-post-in-feed"));
+    }
+
+    @Bean
+    public Declarables createPostInFeedValidatedExchange(){
+        return new Declarables(
+                new FanoutExchange("x.post-in-feed-validated"),
+                new Queue("q.post-in-feed-validated.post-service" ),
+                new Binding("q.post-in-feed-validated.post-service", Binding.DestinationType.QUEUE, "x.post-in-feed-validated", "post-in-feed-validated.post-service", null));
+    }
+
+    @Bean
     public Declarables createSendEmailQueue(){
         return new Declarables(new Queue("q.notification-service.send-email"));
     }

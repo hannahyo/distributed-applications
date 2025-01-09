@@ -14,12 +14,14 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final CreatePostSaga createPostSaga;
+    private final LikePostSaga likePostSaga;
     private final RabbitMqMessageSender eventSender;
 
     @Autowired
-    public PostService(PostRepository postRepository, CreatePostSaga createPostSaga, RabbitMqMessageSender eventSender) {
+    public PostService(PostRepository postRepository, CreatePostSaga createPostSaga, LikePostSaga likePostSaga, RabbitMqMessageSender eventSender) {
         this.postRepository = postRepository;
         this.createPostSaga = createPostSaga;
+        this.likePostSaga = likePostSaga;
         this.eventSender = eventSender;
     }
 
@@ -39,8 +41,7 @@ public class PostService {
     }
 
     public List<Post> getPosts() {
-        List<Post> posts = postRepository.findAll();
-        return posts;
+        return postRepository.findAll();
     }
 
     public void likePost(Integer postId, Integer userId) {
@@ -48,9 +49,9 @@ public class PostService {
 
         if (postOptional.isPresent()) {
             Post post = postOptional.get();
-            post.like();
-            System.out.println("Updated Likes:" + post.getLikes());
+            post.like(userId);
             postRepository.save(post);
+            likePostSaga.executeSaga(post);
         } else {
             throw new RuntimeException("Post not found");
         }

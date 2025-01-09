@@ -133,6 +133,24 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/ApiUser'
+    ValidateUserLikedCommand:
+      type: object
+      properties:
+        postId:
+          type: integer
+        likedBy:
+          type: integer
+    UserLikedValidatedEvent:
+      type: object
+      properties:
+        postId:
+          type: integer
+        likedBy:
+          type: integer
+        email:
+          type: string
+        isValid:
+          type: boolean
     ApiUsers:
       type: array
       items:

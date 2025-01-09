@@ -19,6 +19,11 @@ public class Post {
 
     private Integer createdBy;
 
+    private int likes;
+
+    @ElementCollection
+    private List<Integer> likedBy;
+
     protected Post() {
     }
 
@@ -44,4 +49,13 @@ public class Post {
     public Integer getCreatedBy() {
         return createdBy;
     }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public List<Integer> getLikedBy() {
+        return likedBy;
+    }
+
 }
