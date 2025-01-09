@@ -26,6 +26,11 @@ public class Post {
 
     private Boolean hasValidTaggedUsers;
 
+    private int likes = 0;
+
+    @ElementCollection
+    private List<String> comments;
+
     protected Post() {
     }
 
@@ -57,6 +62,23 @@ public class Post {
 
     public Boolean hasValidTaggedUsers() {
         return hasValidTaggedUsers;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public List<String> getComments() {
+        return comments;
+    }
+
+
+    public void like() {
+        likes++;
+    }
+
+    public void comment(String comment) {
+        comments.add(comment);
     }
 
     public void validatingUser() {

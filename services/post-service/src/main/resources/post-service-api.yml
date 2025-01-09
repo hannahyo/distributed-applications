@@ -74,31 +74,100 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiError'
 
+  /api/v1/post/like/{postId}/{userId}:
+    put:
+      tags:
+        - Post
+      description: Like post
+      operationId: likePost
+      parameters:
+        - name: postId
+          in: path
+          description: ID of the post to like
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: path
+          description: ID of the user that likes the post
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/post/comment:
+    post:
+      tags:
+        - Post
+      description: Comment on post
+      operationId: commentPost
+      parameters:
+        - name: postId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
 components:
   schemas:
     ApiPosts:
-        type: array
-        items:
-            $ref: '#/components/schemas/ApiPost'
+      type: array
+      items:
+        $ref: '#/components/schemas/ApiPost'
     ApiPost:
-        type: object
-        properties:
-            id:
-                type: integer
-            content:
-                type: string
-                example: 'This is my first post'
-            taggedUsers:
-                type: array
-                items:
-                    type: integer
-            createdBy:
-                type: integer
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+          example: 'This is my first post'
+        taggedUsers:
+          type: array
+          items:
+            type: integer
+        createdBy:
+          type: integer
+        likes:
+          type: integer
+          default: 0
+        comments:
+          type: array
+          items:
+            type: string
     UserTaggedEvent:
       type: object
       properties:
         post:
-            $ref: '#/components/schemas/ApiPost'
+          $ref: '#/components/schemas/ApiPost'
     PostCreatedEvent:
       type: object
       properties:

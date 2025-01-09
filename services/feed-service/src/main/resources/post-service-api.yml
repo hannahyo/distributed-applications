@@ -77,28 +77,34 @@ paths:
 components:
   schemas:
     ApiPosts:
-        type: array
-        items:
-            $ref: '#/components/schemas/ApiPost'
+      type: array
+      items:
+        $ref: '#/components/schemas/ApiPost'
     ApiPost:
-        type: object
-        properties:
-            id:
-                type: integer
-            content:
-                type: string
-                example: 'This is my first post'
-            taggedUsers:
-                type: array
-                items:
-                    type: integer
-            createdBy:
-                type: integer
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+          example: 'This is my first post'
+        taggedUsers:
+          type: array
+          items:
+            type: integer
+        createdBy:
+          type: integer
+        likes:
+          type: integer
+        comments:
+          type: array
+          items:
+            type: string
     UserTaggedEvent:
       type: object
       properties:
         post:
-            $ref: '#/components/schemas/ApiPost'
+          $ref: '#/components/schemas/ApiPost'
     PostCreatedEvent:
       type: object
       properties:

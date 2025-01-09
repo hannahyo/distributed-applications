@@ -2,10 +2,12 @@ package be.ucll.da.postservice.domain.post;
 
 import be.ucll.da.postservice.adapters.messaging.RabbitMqMessageSender;
 import be.ucll.da.postservice.api.model.ApiPost;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PostService {
@@ -37,6 +39,32 @@ public class PostService {
     }
 
     public List<Post> getPosts() {
-        return postRepository.findAll();
+        List<Post> posts = postRepository.findAll();
+        return posts;
     }
+
+    public void likePost(Integer postId, Integer userId) {
+        Optional<Post> postOptional = postRepository.findById(postId);
+
+        if (postOptional.isPresent()) {
+            Post post = postOptional.get();
+            post.like();
+            System.out.println("Updated Likes:" + post.getLikes());
+            postRepository.save(post);
+        } else {
+            throw new RuntimeException("Post not found");
+        }
+    }
+
+    public void commentPost(Integer postId, Integer userId, String comment) {
+        Optional<Post> postOptional = postRepository.findById(postId);
+
+        if (postOptional.isPresent()) {
+            Post post = postOptional.get();
+            post.comment(comment);
+            System.out.println("Updated comments:" + post.getComments());
+            postRepository.save(post);
+        } else {
+            throw new RuntimeException("Post not found");
+        }    }
 }

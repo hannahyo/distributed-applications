@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class PostController implements PostApiDelegate {
 
@@ -44,11 +42,25 @@ public class PostController implements PostApiDelegate {
         return ResponseEntity.ok(posts);
     }
 
+    @Override
+    public ResponseEntity<Void> likePost(Integer postId, Integer userId) {
+        postService.likePost(postId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> commentPost(Integer postId, Integer userId, String comment) {
+        postService.commentPost(postId, userId, comment);
+        return ResponseEntity.ok().build();
+    }
+
     private ApiPost toDto(Post post) {
         return new ApiPost()
                 .id(post.getId())
                 .content(post.getContent())
                 .taggedUsers(post.getTaggedUsers())
-                .createdBy(post.getCreatedBy());
+                .createdBy(post.getCreatedBy())
+                .likes(post.getLikes())
+                .comments(post.getComments());
     }
 }
