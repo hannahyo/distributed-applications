@@ -1,8 +1,13 @@
 package be.ucll.da.postservice.adapters.messaging;
 
+import be.ucll.da.postservice.api.model.ApiPost;
+import be.ucll.da.postservice.api.model.PostCreatedEvent;
+//import be.ucll.da.postservice.client.notification.model.SendEmailCommand;
 import be.ucll.da.postservice.client.notification.model.SendEmailCommand;
+import be.ucll.da.postservice.client.user.model.ApiUser;
 import be.ucll.da.postservice.client.user.model.ValidateTaggedUsersCommand;
 import be.ucll.da.postservice.client.user.model.ValidateUserCommand;
+import be.ucll.da.postservice.domain.post.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -37,6 +42,10 @@ public class RabbitMqMessageSender {
         sendToQueue("q.user-service.validate-tagged-users", command);
     }
 
+    public void sendPostCreatedEvent(Post post) {
+        this.rabbitTemplate.convertAndSend("x.post-created", "", toEvent(post));
+    }
+
     public void sendEmail(String recipient, String message) {
         var command = new SendEmailCommand();
         command.recipient(recipient);
@@ -48,5 +57,14 @@ public class RabbitMqMessageSender {
         LOGGER.info("Sending message: " + message);
 
         this.rabbitTemplate.convertAndSend(queue, message);
+    }
+
+    private PostCreatedEvent toEvent(Post post) {
+        return new PostCreatedEvent()
+                .post(new ApiPost()
+                        .id(post.getId())
+                        .content(post.getContent())
+                        .createdBy(post.getCreatedBy())
+                        .taggedUsers(post.getTaggedUsers()));
     }
 }

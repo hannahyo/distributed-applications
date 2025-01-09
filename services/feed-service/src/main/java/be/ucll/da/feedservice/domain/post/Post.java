@@ -22,7 +22,8 @@ public class Post {
     protected Post() {
     }
 
-    public Post(String content, List<Integer> taggedUsers, Integer createdBy) {
+    public Post(Integer id, String content, List<Integer> taggedUsers, Integer createdBy) {
+        this.id = id;
         this.content = content;
         this.taggedUsers = taggedUsers;
         this.createdBy = createdBy;

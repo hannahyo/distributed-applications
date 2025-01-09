@@ -99,6 +99,11 @@ components:
       properties:
         post:
             $ref: '#/components/schemas/ApiPost'
+    PostCreatedEvent:
+      type: object
+      properties:
+        post:
+          $ref: '#/components/schemas/ApiPost'
     ApiError:
       type: object
       properties:

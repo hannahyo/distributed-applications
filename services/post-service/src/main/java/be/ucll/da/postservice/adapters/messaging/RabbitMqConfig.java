@@ -63,6 +63,14 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    public Declarables createPostCreatedSchema(){
+        return new Declarables(
+                new FanoutExchange("x.post-created"),
+                new Queue("q.post-feed-service" ),
+                new Binding("q.post-feed-service", Binding.DestinationType.QUEUE, "x.post-created", "post-feed-service", null));
+    }
+
+    @Bean
     public Declarables createSendEmailQueue(){
         return new Declarables(new Queue("q.notification-service.send-email"));
     }
