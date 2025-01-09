@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class FeedService {
@@ -41,6 +42,18 @@ public class FeedService {
         feedPosts.addAll(taggedPosts);
 
         return feedPosts;
+    }
+
+    public List<Post> searchFeed(Integer userId, String contentQuery, Integer friendId, Integer taggedUserId) {
+        List<Post> userFeed = getUserFeed(userId);
+
+        return userFeed.stream()
+                .filter(post ->
+                        (contentQuery == null || post.getContent().toLowerCase().contains(contentQuery.toLowerCase())) &&
+                                (friendId == null || post.getCreatedBy().equals(friendId)) &&
+                                (taggedUserId == null || post.getTaggedUsers().contains(taggedUserId))
+                )
+                .collect(Collectors.toList());
     }
 
 }

@@ -21,11 +21,23 @@ public class FeedController implements FeedApiDelegate {
         this.feedService = feedService;
     }
 
-//    @Override
+    @Override
     public ResponseEntity<ApiFeed> getUserFeed(Integer userId) {
         List<Post> userFeed = feedService.getUserFeed(userId);
 
         List<ApiPost> apiPosts = userFeed.stream()
+                .map(this::toDto)
+                .toList();
+
+        ApiFeed apiFeed = new ApiFeed().posts(apiPosts);
+        return ResponseEntity.ok(apiFeed);
+    }
+
+    @Override
+    public ResponseEntity<ApiFeed> searchFeed(Integer userId, String contentQuery, Integer friendId, Integer taggedUserId) {
+        List<Post> filteredFeed = feedService.searchFeed(userId, contentQuery, friendId, taggedUserId);
+
+        List<ApiPost> apiPosts = filteredFeed.stream()
                 .map(this::toDto)
                 .toList();
 
