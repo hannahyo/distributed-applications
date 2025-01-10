@@ -1,0 +1,349 @@
+openapi: 3.0.3
+info:
+  title: Patient Service v1
+  description: |-
+    API for Patient Service
+  termsOfService: http://swagger.io/terms/
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+paths:
+  /api/v1/socialnetwork/user:
+    post:
+      tags:
+        - User
+      description: Create a new user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiUser'
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/socialnetwork/post:
+    post:
+      tags:
+        - Post
+      description: Create a new post
+      operationId: createPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiPost'
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/socialnetwork/post/{id}:
+    delete:
+      tags:
+        - Post
+      description: Delete a post
+      operationId: deletePost
+      parameters:
+        - name: id
+          in: path
+          description: ID of the post to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/socialnetwork/user/{id}/friends/{friendId}:
+    post:
+      tags:
+        - User
+      description: Add a new friend
+      operationId: addFriend
+      parameters:
+        - name: id
+          in: path
+          description: ID of the user who is adding a friend
+          required: true
+          schema:
+            type: integer
+        - name: friendId
+          in: path
+          description: ID of the friend to be added
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/socialnetwork/feed:
+    get:
+      tags:
+        - Feed
+      description: Get user feed
+      operationId: getUserFeed
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: The ID of the user whose feed to retrieve.
+      responses:
+        '200':
+          description: Successfully retrieved feed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiFeed'
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/socialnetwork/feed/search:
+    get:
+      tags:
+        - Feed
+      description: Search posts in the user's feed
+      operationId: searchFeed
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: contentQuery
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: friendId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: taggedUser
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully searched feed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiFeed'
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/socialnetwork/like/{postId}/{userId}:
+    put:
+      tags:
+        - Post
+      description: Like post
+      operationId: likePost
+      parameters:
+        - name: postId
+          in: path
+          description: ID of the post to like
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: path
+          description: ID of the user that likes the post
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/socialnetwork/comment/{postId}/{userId):
+    post:
+      tags:
+        - Post
+      description: Comment on post
+      operationId: commentPost
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/socialnetwork/unlike:
+    put:
+      tags:
+        - Post
+      description: Unlike a post
+      operationId: unlikePost
+      parameters:
+        - name: postId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/socialnetwork/uncomment:
+    put:
+      tags:
+        - Post
+      description: Uncomment on post
+      operationId: uncommentPost
+      parameters:
+        - name: postId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+components:
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'Functional code specifying the error'
+          example: '2300'
+        message:
+          type: string
+          description: 'Brief explanation about the error, for more information consult the Doctor Service team'
+    ApiPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+          example: 'This is my first post'
+        taggedUsers:
+          type: array
+          items:
+            type: integer
+        createdBy:
+          type: integer
+        likes:
+          type: integer
+          default: 0
+        likedBy:
+          type: array
+          items:
+            type: integer
+        comments:
+          type: array
+          items:
+            type: string
+        commentedBy:
+          type: array
+          items:
+            type: integer
+    ApiUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+          example: 'Hannah'
+        lastName:
+          type: string
+          example: 'Young'
+        email:
+          type: string
+          format: email
+          example: 'hannah.young@gmail.com'
+        friends:
+          type: array
+          items:
+            type: integer
+    ApiFeed:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiPost'

@@ -1,0 +1,132 @@
+openapi: 3.0.3
+info:
+  title: Patient Service v1
+  description: |-
+    API for Patient Service
+  termsOfService: http://swagger.io/terms/
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+paths:
+  /api/v1/feed:
+    get:
+      tags:
+        - Feed
+      description: Get user feed
+      operationId: getUserFeed
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: The ID of the user whose feed to retrieve.
+      responses:
+        '200':
+          description: Successfully retrieved feed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiFeed'
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/feed/search:
+    get:
+      tags:
+        - Feed
+      description: Search posts in the user's feed
+      operationId: searchFeed
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: contentQuery
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: friendId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: taggedUser
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully searched feed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiFeed'
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+components:
+  schemas:
+    ApiFeed:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiPost'
+    ApiPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+          example: 'This is my first post'
+        taggedUsers:
+          type: array
+          items:
+            type: integer
+        createdBy:
+          type: integer
+    ValidatePostInFeedCommand:
+      type: object
+      properties:
+        postId:
+          type: integer
+        userId:
+          type: integer
+        email:
+          type: string
+    PostInFeedValidatedEvent:
+      type: object
+      properties:
+        postId:
+          type: integer
+        userId:
+          type: integer
+        email:
+          type: string
+        isValid:
+          type: boolean
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 'Functional code specifying the error'
+          example: '2300'
+        message:
+          type: string
+          description: 'Brief explanation about the error, for more information consult the Doctor Service team'
