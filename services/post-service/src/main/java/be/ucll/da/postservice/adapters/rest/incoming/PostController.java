@@ -54,6 +54,20 @@ public class PostController implements PostApiDelegate {
         return ResponseEntity.ok().build();
     }
 
+    @Override
+    public ResponseEntity<Void> unlikePost(Integer postId, Integer userId) {
+        postService.unLikePost(postId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> uncommentPost(Integer postId, Integer userId) {
+        postService.unCommentPost(postId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+
+
     private ApiPost toDto(Post post) {
         return new ApiPost()
                 .id(post.getId())

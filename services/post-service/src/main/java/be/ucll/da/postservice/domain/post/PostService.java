@@ -66,11 +66,37 @@ public class PostService {
         if (postOptional.isPresent()) {
             Post post = postOptional.get();
             post.comment(comment, userId);
-            System.out.println("Updated comments:" + post.getComments());
             postRepository.save(post);
             postCommentSaga.executeSaga(post, userId);
             eventSender.sendPostUpdatedEvent(post);
         } else {
             throw new RuntimeException("Post not found");
-        }    }
+        }
+    }
+
+    public void unLikePost(Integer postId, Integer userId) {
+        Optional<Post> postOptional = postRepository.findById(postId);
+
+        if (postOptional.isPresent()) {
+            Post post = postOptional.get();
+            post.unlike(userId);
+            postRepository.save(post);
+            eventSender.sendPostUpdatedEvent(post);
+        } else {
+            throw new RuntimeException("Post not found");
+        }
+    }
+
+    public void unCommentPost(Integer postId, Integer userId) {
+        Optional<Post> postOptional = postRepository.findById(postId);
+
+        if (postOptional.isPresent()) {
+            Post post = postOptional.get();
+            post.uncomment(userId);
+            postRepository.save(post);
+            eventSender.sendPostUpdatedEvent(post);
+        } else {
+            throw new RuntimeException("Post not found");
+        }
+    }
 }
