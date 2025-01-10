@@ -3,6 +3,7 @@ package be.ucll.da.feedservice.adapters.messaging;
 import be.ucll.da.feedservice.api.model.PostInFeedValidatedEvent;
 import be.ucll.da.feedservice.api.model.ValidatePostInFeedCommand;
 import be.ucll.da.feedservice.client.post.model.PostCreatedEvent;
+import be.ucll.da.feedservice.client.post.model.PostUpdatedEvent;
 import be.ucll.da.feedservice.client.user.model.UserCreatedEvent;
 import be.ucll.da.feedservice.domain.feed.FeedService;
 import be.ucll.da.feedservice.domain.post.Post;
@@ -16,8 +17,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @Transactional
@@ -41,13 +40,19 @@ public class MessageListener {
     @RabbitListener(queues = {"q.user-feed-service"})
     public void onUserCreated(UserCreatedEvent event) {
         LOGGER.info("Received userCreatedEvent...");
-        this.userRepository.save(new User(event.getUser().getId(), event.getUser().getFriends()));
+        this.userRepository.save(new User(event.getUser().getId(), event.getUser().getFriends(), event.getUser().getEmail()));
     }
 
     @RabbitListener(queues = {"q.post-feed-service"})
     public void onPostCreated(PostCreatedEvent event) {
         LOGGER.info("Received postCreatedEvent...");
-        this.postRepository.save(new Post(event.getPost().getId(), event.getPost().getContent(), event.getPost().getTaggedUsers(),  event.getPost().getCreatedBy()));
+        this.postRepository.save(new Post(event.getPost().getId(), event.getPost().getContent(), event.getPost().getTaggedUsers(),  event.getPost().getCreatedBy(), event.getPost().getLikes(), event.getPost().getLikedBy(), event.getPost().getComments(), event.getPost().getCommentedBy()));
+    }
+
+    @RabbitListener(queues = {"q.post-update-feed-service"})
+    public void onPostUpdated(PostUpdatedEvent event) {
+        LOGGER.info("Received postUpdatedEvent...");
+        this.postRepository.save(new Post(event.getPost().getId(), event.getPost().getContent(), event.getPost().getTaggedUsers(), event.getPost().getCreatedBy(), event.getPost().getLikes(), event.getPost().getLikedBy(), event.getPost().getComments(), event.getPost().getCommentedBy()));
     }
 
     @RabbitListener(queues = {"q.feed-service.validate-post-in-feed"})
@@ -55,13 +60,28 @@ public class MessageListener {
         LOGGER.info("Received validatePostInFeedCommand...");
 
         Post post = feedService.validateUserFeed(command.getPostId(), command.getUserId());
+
         PostInFeedValidatedEvent event = new PostInFeedValidatedEvent();
         event.postId(post.getId());
+        event.userId(post.getLastLiked());
         event.isValid(post != null);
-        event.userId(command.getUserId());
-        event.email(command.getEmail());
 
         LOGGER.info("Sending event: " + event);
         this.rabbitTemplate.convertAndSend("x.post-in-feed-validated", "", event);
+    }
+
+    @RabbitListener(queues = {"q.feed-service.validate-post-in-feed-comment"})
+    public void onValidatePostInFeedComment(ValidatePostInFeedCommand command) {
+        LOGGER.info("Received validatePostInFeedCommandComment...");
+
+        Post post = feedService.validateUserFeed(command.getPostId(), command.getUserId());
+
+        PostInFeedValidatedEvent event = new PostInFeedValidatedEvent();
+        event.postId(post.getId());
+        event.userId(post.getLastCommented());
+        event.isValid(post != null);
+
+        LOGGER.info("Sending event: " + event);
+        this.rabbitTemplate.convertAndSend("x.post-in-feed-comment-validated", "", event);
     }
 }

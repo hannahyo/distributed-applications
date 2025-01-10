@@ -159,16 +159,29 @@ components:
         likes:
           type: integer
           default: 0
+        likedBy:
+          type: array
+          items:
+            type: integer
         comments:
           type: array
           items:
             type: string
+        commentedBy:
+          type: array
+          items:
+            type: integer
     UserTaggedEvent:
       type: object
       properties:
         post:
           $ref: '#/components/schemas/ApiPost'
     PostCreatedEvent:
+      type: object
+      properties:
+        post:
+          $ref: '#/components/schemas/ApiPost'
+    PostUpdatedEvent:
       type: object
       properties:
         post:

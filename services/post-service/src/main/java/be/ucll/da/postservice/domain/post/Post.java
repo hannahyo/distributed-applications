@@ -35,6 +35,9 @@ public class Post {
     @ElementCollection
     private List<String> comments;
 
+    @ElementCollection
+    private List<Integer> commentedBy = new ArrayList<>();
+
     protected Post() {
     }
 
@@ -80,6 +83,10 @@ public class Post {
         return likedBy;
     }
 
+    public List<Integer> getCommentedBy() {
+        return commentedBy;
+    }
+
 
     public void like(Integer userId) {
         likes++;
@@ -91,8 +98,13 @@ public class Post {
         likedBy.remove(userId);
     }
 
-    public void comment(String comment) {
+    public void comment(String comment, Integer userId) {
         comments.add(comment);
+        commentedBy.add(userId);
+    }
+
+    public void uncomment(Integer userId) {
+        commentedBy.remove(userId);
     }
 
     public void validatingUser() {
@@ -129,6 +141,14 @@ public class Post {
     }
 
     public void postInFeedInvalid() {
+        this.status = PostStatus.FEED_INVALID;
+    }
+
+    public void userCommentValid() {
+        this.status = PostStatus.VALIDATING_FEED;
+    }
+
+    public void userCommentInvalid() {
         this.status = PostStatus.FEED_INVALID;
     }
 }

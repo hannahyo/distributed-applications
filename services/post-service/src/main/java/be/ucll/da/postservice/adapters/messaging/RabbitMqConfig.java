@@ -71,6 +71,14 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    public Declarables createPostUpdatedSchema(){
+        return new Declarables(
+                new FanoutExchange("x.post-updated"),
+                new Queue("q.post-update-feed-service" ),
+                new Binding("q.post-update-feed-service", Binding.DestinationType.QUEUE, "x.post-updated", "post-update-feed-service", null));
+    }
+
+    @Bean
     public Declarables createValidateUserLikedQueue(){
         return new Declarables(new Queue("q.user-service.validate-user-liked"));
     }
@@ -89,11 +97,37 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    public Declarables createValidatePostInFeedCommentQueue(){
+        return new Declarables(new Queue("q.feed-service.validate-post-in-feed-comment"));
+    }
+
+    @Bean
     public Declarables createPostInFeedValidatedExchange(){
         return new Declarables(
                 new FanoutExchange("x.post-in-feed-validated"),
                 new Queue("q.post-in-feed-validated.post-service" ),
                 new Binding("q.post-in-feed-validated.post-service", Binding.DestinationType.QUEUE, "x.post-in-feed-validated", "post-in-feed-validated.post-service", null));
+    }
+
+    @Bean
+    public Declarables createPostInFeedCommentValidatedExchange(){
+        return new Declarables(
+                new FanoutExchange("x.post-in-feed-comment-validated"),
+                new Queue("q.post-in-feed-validated-comment.post-service" ),
+                new Binding("q.post-in-feed-validated-comment.post-service", Binding.DestinationType.QUEUE, "x.post-in-feed-comment-validated", "post-in-feed-validated.post-service", null));
+    }
+
+    @Bean
+    public Declarables createValidateUserCommentQueue(){
+        return new Declarables(new Queue("q.user-service.validate-user-comment"));
+    }
+
+    @Bean
+    public Declarables createUserCommentValidatedExchange(){
+        return new Declarables(
+                new FanoutExchange("x.user-comment-validated"),
+                new Queue("q.user-comment-validated.post-service" ),
+                new Binding("q.user-comment-validated.post-service", Binding.DestinationType.QUEUE, "x.user-comment-validated", "user-comment-validated.post-service", null));
     }
 
     @Bean

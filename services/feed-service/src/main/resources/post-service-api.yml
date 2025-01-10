@@ -74,6 +74,68 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiError'
 
+  /api/v1/post/like/{postId}/{userId}:
+    put:
+      tags:
+        - Post
+      description: Like post
+      operationId: likePost
+      parameters:
+        - name: postId
+          in: path
+          description: ID of the post to like
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: path
+          description: ID of the user that likes the post
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/post/comment:
+    post:
+      tags:
+        - Post
+      description: Comment on post
+      operationId: commentPost
+      parameters:
+        - name: postId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
 components:
   schemas:
     ApiPosts:
@@ -96,16 +158,30 @@ components:
           type: integer
         likes:
           type: integer
+          default: 0
+        likedBy:
+          type: array
+          items:
+            type: integer
         comments:
           type: array
           items:
             type: string
+        commentedBy:
+          type: array
+          items:
+            type: integer
     UserTaggedEvent:
       type: object
       properties:
         post:
           $ref: '#/components/schemas/ApiPost'
     PostCreatedEvent:
+      type: object
+      properties:
+        post:
+          $ref: '#/components/schemas/ApiPost'
+    PostUpdatedEvent:
       type: object
       properties:
         post:

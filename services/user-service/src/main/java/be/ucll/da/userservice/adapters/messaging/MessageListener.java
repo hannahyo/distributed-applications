@@ -89,14 +89,34 @@ public class MessageListener {
         User user = userService.validateUser(command.getLikedBy());
         if (user != null) {
             event.likedBy(user.getId());
-            event.isValid(true);
             event.email(user.getEmail());
+            event.isValid(true);
         } else {
             event.isValid(false);
         }
 
         LOGGER.info("Sending event: " + event);
         this.rabbitTemplate.convertAndSend("x.user-liked-validated", "", event);
+    }
+
+    @RabbitListener(queues = {"q.user-service.validate-user-comment"})
+    public void onValidateUserComment(ValidateUserCommentedCommand command) {
+        LOGGER.info("Received command: " + command);
+
+        UserCommentedValidatedEvent event = new UserCommentedValidatedEvent();
+        event.postId(command.getPostId());
+
+        User user = userService.validateUser(command.getCommentedBy());
+        if (user != null) {
+            event.commentedBy(user.getId());
+            event.email(user.getEmail());
+            event.isValid(true);
+        } else {
+            event.isValid(false);
+        }
+
+        LOGGER.info("Sending event: " + event);
+        this.rabbitTemplate.convertAndSend("x.user-comment-validated", "", event);
     }
 
 }

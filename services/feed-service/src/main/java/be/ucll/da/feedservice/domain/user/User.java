@@ -17,11 +17,14 @@ public class User {
     @ElementCollection
     private List<Integer> friends = new ArrayList<>();
 
+    private String email;
+
     protected User() {}
 
-    public User(Integer id, List<Integer> friends) {
+    public User(Integer id, List<Integer> friends, String email) {
         this.id = id;
         this.friends = friends;
+        this.email = email;
     }
 
     public Integer getId() {
@@ -30,6 +33,10 @@ public class User {
 
     public List<Integer> getFriends() {
         return friends;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public void addFriend(Integer friendId) {

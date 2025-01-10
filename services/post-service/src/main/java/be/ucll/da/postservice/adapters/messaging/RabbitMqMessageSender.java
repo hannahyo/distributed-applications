@@ -5,10 +5,7 @@ import be.ucll.da.postservice.api.model.PostCreatedEvent;
 //import be.ucll.da.postservice.client.notification.model.SendEmailCommand;
 import be.ucll.da.postservice.client.feed.model.ValidatePostInFeedCommand;
 import be.ucll.da.postservice.client.notification.model.SendEmailCommand;
-import be.ucll.da.postservice.client.user.model.ApiUser;
-import be.ucll.da.postservice.client.user.model.ValidateTaggedUsersCommand;
-import be.ucll.da.postservice.client.user.model.ValidateUserCommand;
-import be.ucll.da.postservice.client.user.model.ValidateUserLikedCommand;
+import be.ucll.da.postservice.client.user.model.*;
 import be.ucll.da.postservice.domain.post.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +45,10 @@ public class RabbitMqMessageSender {
         this.rabbitTemplate.convertAndSend("x.post-created", "", toEvent(post));
     }
 
+    public void sendPostUpdatedEvent(Post post) {
+        this.rabbitTemplate.convertAndSend("x.post-updated", "", toEvent(post));
+    }
+
     public void sendEmail(String recipient, String message) {
         var command = new SendEmailCommand();
         command.recipient(recipient);
@@ -55,18 +56,32 @@ public class RabbitMqMessageSender {
         sendToQueue("q.notification-service.send-email", command);
     }
 
-    public void sendValidateUserLikedCommand(Integer postId, Integer likedBy) {
+    public void sendValidateUserLikedCommand(Integer postId, Integer userId) {
         var command = new ValidateUserLikedCommand();
         command.postId(postId);
-        command.likedBy(likedBy);
+        command.likedBy(userId);
         sendToQueue("q.user-service.validate-user-liked", command);
     }
 
-    public void sendValidatePostInFeedCommand(Integer postId, Integer likedBy) {
+    public void sendValidatePostInFeedCommand(Integer postId, Integer userId) {
         var command = new ValidatePostInFeedCommand();
         command.postId(postId);
-        command.userId(likedBy);
+        command.userId(userId);
         sendToQueue("q.feed-service.validate-post-in-feed", command);
+    }
+
+    public void sendValidateUserCommentCommand(Integer postId, Integer userId) {
+        var command = new ValidateUserCommentedCommand();
+        command.postId(postId);
+        command.commentedBy(userId);
+        sendToQueue("q.user-service.validate-user-comment", command);
+    }
+
+    public void sendValidatePostInFeedCommentCommand(Integer postId, Integer userId) {
+        var command = new ValidatePostInFeedCommand();
+        command.postId(postId);
+        command.userId(userId);
+        sendToQueue("q.feed-service.validate-post-in-feed-comment", command);
     }
 
     private void sendToQueue(String queue, Object message) {
@@ -81,6 +96,10 @@ public class RabbitMqMessageSender {
                         .id(post.getId())
                         .content(post.getContent())
                         .createdBy(post.getCreatedBy())
-                        .taggedUsers(post.getTaggedUsers()));
+                        .taggedUsers(post.getTaggedUsers())
+                        .likes(post.getLikes())
+                        .likedBy(post.getLikedBy())
+                        .comments(post.getComments())
+                        .commentedBy(post.getCommentedBy()));
     }
 }
